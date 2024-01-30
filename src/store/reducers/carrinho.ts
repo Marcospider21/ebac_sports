@@ -1,0 +1,41 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Produto } from '../../App'
+
+type CarrinhoState = {
+  itens: Produto[]
+  favoritos: Produto[]
+}
+
+const initialState: CarrinhoState = {
+  itens: [],
+  favoritos: []
+}
+
+const carrinhoSlice = createSlice({
+  name: 'carrinho',
+  initialState,
+  reducers: {
+    adicionar: (state, action: PayloadAction<Produto>) => {
+      const produto = action.payload
+
+      if (state.itens.find((p) => p.id === produto.id)) {
+        alert('Item já adicionado')
+      } else {
+        state.itens.push(produto)
+      }
+    },
+    favoritar: (state, action: PayloadAction<Produto>) => {
+      const produto = action.payload
+      const index = state.favoritos.findIndex((p) => p.id === produto.id)
+
+      if (index !== -1) {
+        state.favoritos.splice(index, 1) // Remove o item dos favoritos se já estiver presente
+      } else {
+        state.favoritos.push(produto) // Adiciona o item aos favoritos se não estiver presente
+      }
+    }
+  }
+})
+
+export const { adicionar, favoritar } = carrinhoSlice.actions
+export default carrinhoSlice.reducer
